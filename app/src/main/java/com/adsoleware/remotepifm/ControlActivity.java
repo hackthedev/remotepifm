@@ -2,9 +2,12 @@ package com.adsoleware.remotepifm;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.controls.Control;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -14,7 +17,9 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,50 +27,98 @@ import java.util.Properties;
 
 public class ControlActivity extends AppCompatActivity {
 
+    String wavFiles;
+    String mp3files;
+    String selectedFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
+        getFiles();
+    }
+
+
+    public void getFiles(){
         try {
-            String wavFiles = cmd("ls -l /home/pi/Music/*.wav");
-            String[] wavFiles_lines = wavFiles.split(System.getProperty("line.separator"));
 
 
-            final ListView lv = (ListView) findViewById(R.id.listbox_files);
-            final List<String> final_filelist = new ArrayList<String>(Arrays.asList(wavFiles_lines));
+            new Thread(new Runnable() {
+                public void run() {
 
-            // Create an ArrayAdapter from List
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                    (this, android.R.layout.simple_list_item_1, final_filelist);
+                    try {
+                        wavFiles = cmd("find /home/pi/Music/*.wav");
 
-            // DataBind ListView with items from ArrayAdapter
-            lv.setAdapter(arrayAdapter);
+                        ListView lv = (ListView) findViewById(R.id.listbox_files);
+                        ArrayList<String> ListElements = new ArrayList<>();
+
+                        ArrayList list = new ArrayList<>();
+                        String[] ary = wavFiles.split("\r\n");
+
+                        ControlActivity.this.runOnUiThread(new Runnable()
+                        {
+                            public void run()
+                            {
+
+                                try{
+                                    BufferedReader bufReader = new BufferedReader(new StringReader(wavFiles));
+                                    String line=null;
+                                    while( (line=bufReader.readLine()) != null )
+                                    {
+                                        list.add(line.replace("/home/pi/Music/", ""));
+                                    }
+                                } catch (Exception ex){
+
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(ControlActivity.this, android.R.layout.simple_list_item_1, list);
+
+                                lv.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+
+                                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                                        String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
+                                        try {
+
+                                            selectedFile = selectedFromList;
+
+                                            Toast.makeText(ControlActivity.this, "Selected File " + selectedFromList, Toast.LENGTH_SHORT).show();
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
 
 
-            for(String s : wavFiles_lines){
-                final_filelist.add(s);
-            }
+
+                    } catch (Exception e) {
+                        Log.e("Some Tag", e.getMessage());
+                    }
+
+                }
+            }).start();
+
 
         } catch (Exception e) {
             Log.e("SomeTag", e.getMessage());
         }
     }
 
-    public EditText host = (EditText)findViewById(R.id.textbox_host);
-    public EditText user = (EditText)findViewById(R.id.textbox_user);
-    public EditText pass = (EditText)findViewById(R.id.textbox_pass);
-    public EditText port = (EditText)findViewById(R.id.textbox_port);
-
     public String cmd(
             String command) throws Exception {
 
         try{
 
-            String username = user.getText().toString();
-            String hostname = host.getText().toString();
-            String password = pass.getText().toString();
-            String _port = port.getText().toString();
+            String username = MainActivity._user;
+            String hostname = MainActivity._host;
+            String password = MainActivity._pass;
+            String _port = MainActivity._port;
 
             JSch jsch = new JSch();
             Session session = jsch.getSession(username, hostname, Integer.parseInt(_port));
@@ -84,7 +137,6 @@ public class ControlActivity extends AppCompatActivity {
             channelssh.setOutputStream(baos);
 
             // Execute command
-            //channelssh.setCommand("sudo ./PiFmRds/src/pi_fm_rds -freq 105.3 -audio Music/sound.wav");
             channelssh.setCommand(command);
 
             channelssh.connect();
@@ -114,5 +166,87 @@ public class ControlActivity extends AppCompatActivity {
                 Toast.makeText(ControlActivity.this, text, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void playsound(View view) {
+        EditText freq = (EditText)findViewById(R.id.textbox_freq);
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Log.e("Playback", cmd("sudo ./PiFmRds/src/pi_fm_rds -freq " + freq.getText().toString() + " -audio Music/" + selectedFile + " &"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void convertFile(View view) {
+
+        ListView lv = (ListView) findViewById(R.id.listbox_files);
+        ArrayList list = new ArrayList<>();
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    mp3files = cmd("find /home/pi/Music/*.mp3");
+
+                    String[] ary = mp3files.split("\r\n");
+
+                    try{
+                        BufferedReader bufReader = new BufferedReader(new StringReader(mp3files));
+                        String line=null;
+                        while( (line=bufReader.readLine()) != null )
+                        {
+                            cmd("ffmpeg -i '" + line + "' '" + line.replace(".mp3", "").replace(" ", "") + ".wav'");
+                            Log.e("CONVERT", "Trying to convert " + line);
+                            Log.e("INFO", "ffmpeg -i '" + line + "' '" + line.replace(".mp3", "").replace(" ", "") + ".wav'");
+                        }
+                    } catch (Exception ex){
+
+                    }
+
+                } catch (Exception e) {
+                    Log.e("Some Tag", e.getMessage());
+                }
+            }
+        }).start();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(ControlActivity.this, android.R.layout.simple_list_item_1, list);
+
+        lv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
+                try {
+
+                    selectedFile = selectedFromList;
+
+                    Toast.makeText(ControlActivity.this, "Selected File " + selectedFromList, Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        getFiles();
+    }
+
+    public void stopSound(View view) {
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    cmd("sudo pkill pi_fm_rds");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
     }
 }

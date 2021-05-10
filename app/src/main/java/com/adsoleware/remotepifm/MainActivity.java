@@ -81,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static String _host;
+    public static String _user;
+    public static String _pass;
+    public static String _port;
+    public static String _freq;
+
     public void sshTest(View view) {
         new Thread(new Runnable() {
             public void run() {
@@ -90,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
                     EditText user = (EditText)findViewById(R.id.textbox_user);
                     EditText pass = (EditText)findViewById(R.id.textbox_pass);
                     EditText port = (EditText)findViewById(R.id.textbox_port);
+
+
+
+                    _host = host.getText().toString();
+                    _user = user.getText().toString();
+                    _pass = pass.getText().toString();
+                    _port = port.getText().toString();
+
 
                     String result = executeRemoteCommand(user.getText().toString(), pass.getText().toString(), host.getText().toString(), Integer.parseInt(port.getText().toString()), "pwd");
 
