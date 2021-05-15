@@ -1,4 +1,5 @@
-# Remote Pi FM
+# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" /> <img src="https://img.shields.io/badge/Amazon App Store-Awaiting Approval-orange" />
+
 This is an Android App which allows you to control you Raspberry Pi (3B+ prefered) in combination with the [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds). 
 I made this app beccause I wanted to be able to control everything from my Smartphone. I once made a C# Application which is exactly like this app but was a WinForm App 
 that I've emulated using mono on the Raspberry Pi. It worked, but my Touchscreen stopped working for the Pi.
@@ -16,19 +17,6 @@ controlling it easier.
 
 <br>
 
-## App Store
-I've submitted this Application to Google Play and Amazon's App Store. Therefore don't just copy it and publish it on your own. Since I already submitted it and I don't like 
-the idea of someone copying and republishing my app. See the license file anyway. 
-
-<br>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" />
-  <img src="https://img.shields.io/badge/Amazon App Store-Awaiting Approval-orange" />
-</p>
-
-<br>
-
 ## Features
 - Wireless SSH connection to your Raspberry Pi
 - Play and Stop FM Broadcast
@@ -36,6 +24,12 @@ the idea of someone copying and republishing my app. See the license file anyway
 - Set your custom frequency
 - Convert uploaded .mp3 files to .wav
   - Also converts file names (spaces are being removed, brackets will be also removed etc...)
+
+<br>
+
+## App Store
+I've submitted this Application to Google Play and Amazon's App Store. Therefore don't just copy it and publish it on your own. Since I already submitted it and I don't like 
+the idea of someone copying and republishing my app. See the license file anyway. 
   
 <br>
 
