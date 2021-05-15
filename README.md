@@ -33,3 +33,8 @@ the idea of someone copying and republishing my app. See the license file anyway
 
 ## About Updates
 I've planed to keep updating this app and add new features. When everything works fine I've planed to clean up the code and improve it. For now it is a little bit messy, but this will be fixed! This is my ever first android app.
+
+<br>
+
+## Download
+If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
