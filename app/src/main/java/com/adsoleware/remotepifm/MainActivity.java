@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
             String command) throws Exception {
 
         try{
+            hostname = hostname.replace(" ", "");
+
+
             JSch jsch = new JSch();
             Session session = jsch.getSession(username, hostname, 22);
             session.setPassword(password);
@@ -48,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             channelssh.setOutputStream(baos);
 
-            // Execute command
-            //channelssh.setCommand("sudo ./PiFmRds/src/pi_fm_rds -freq 105.3 -audio Music/sound.wav");
             channelssh.setCommand(command);
 
             channelssh.connect();
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
             return baos.toString();
         } catch (Exception e){
-            Log.e("Some Tag", e.getMessage());
+            Log.e("MainActivity-Login:", e.getMessage());
 
             return "ERROR";
         }
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    _host = host.getText().toString();
+                    _host = host.getText().toString().replace(" ", "");
                     _user = user.getText().toString();
                     _pass = pass.getText().toString();
                     _port = port.getText().toString();
