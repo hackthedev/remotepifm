@@ -23,6 +23,7 @@ the idea of someone copying and republishing my app. See the license file anyway
 
 <p align="center">
   <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" />
+  <img src="https://img.shields.io/badgeAmazon App Store-Awaiting Approval-orange" />
 </p>
 
 <br>
