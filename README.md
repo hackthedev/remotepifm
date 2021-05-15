@@ -51,3 +51,10 @@ I've planed to keep updating this app and add new features. When everything work
 
 ## Download
 If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
+
+<br>
+
+## Screenshots
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/124VaF.png" />
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/o2Eogf.png" />
+(yeah i really love nightcore)
