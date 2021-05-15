@@ -8,6 +8,13 @@ controlling it easier.
 
 <br>
 
+
+## Requirements
+- [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds)
+- Raspberry Pi (tested with 3B+)
+  - <i>Quote: It is compatible with both the Raspberry Pi 1 (the original one) and the Raspberry Pi 2, 3 and 4.</i>
+
+
 ## App Store
 I've submitted this Application to Google Play and Amazon's App Store. Therefore don't just copy it and publish it on your own. Since I already submitted it and I don't like 
 the idea of someone copying and republishing my app. See the license file anyway. 
