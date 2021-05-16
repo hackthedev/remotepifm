@@ -11,14 +11,14 @@ controlling it easier.
 
 ### Contents
 - [Requirements](#requirements)
-- [Software Installation](https://github.com/hackthedev/remotepifm#software-installation)
-- [Hardware Setup](https://github.com/hackthedev/remotepifm#hardware-setup)
-- [Features](https://github.com/hackthedev/remotepifm#features)
-- [App Store](https://github.com/hackthedev/remotepifm#app-store)
-- [Planned Features](https://github.com/hackthedev/remotepifm#planned-features)
-- [About Updates](https://github.com/hackthedev/remotepifm#about-updates)
-- [Download](https://github.com/hackthedev/remotepifm#download)
-- [Screenshots](https://github.com/hackthedev/remotepifm#screenshots)
+- [Software Installation](#software-installation)
+- [Hardware Setup](#hardware-setup)
+- [Features](#features)
+- [App Store](#app-store)
+- [Planned Features](#planned-features)
+- [About Updates](#about-updates)
+- [Download](#download)
+- [Screenshots](#screenshots)
 
 <br>
 
