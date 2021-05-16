@@ -9,6 +9,19 @@ controlling it easier.
 
 <br>
 
+### Contents
+- [Requirements](https://github.com/hackthedev/remotepifm#software-installation)
+- [Software Installation](https://github.com/hackthedev/remotepifm#software-installation)
+- [Hardware Setup](https://github.com/hackthedev/remotepifm#hardware-setup)
+- [Features](https://github.com/hackthedev/remotepifm#features)
+- [App Store](https://github.com/hackthedev/remotepifm#app-store)
+- [Planned Features](https://github.com/hackthedev/remotepifm#planned-features)
+- [About Updates](https://github.com/hackthedev/remotepifm#about-updates)
+- [Download](https://github.com/hackthedev/remotepifm#download)
+- [Screenshots](https://github.com/hackthedev/remotepifm#screenshots)
+
+<br>
+
 
 ## Requirements
 - [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds)
