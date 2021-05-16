@@ -29,9 +29,11 @@
         android:ems="10"
         android:hint="Host Adress"
         android:inputType="textPersonName"
+        android:text="192.168.178.34"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:text="192.168.178.34" />
 
     <EditText
         android:id="@+id/textbox_user"
@@ -73,11 +75,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="156dp"
         android:layout_marginLeft="156dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="161dp"
         android:layout_marginRight="161dp"
         android:onClick="sshTest"
+        android:textColor = "@color/white"
         android:text="Test connection"
+        app:backgroundTint="#000000"
+        app:iconTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textbox_port" />
@@ -91,9 +96,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="99dp"
         android:layout_marginRight="99dp"
+        android:autoText="false"
         android:ems="10"
-        android:hint="Password (e.g. raspberry)"
+        android:hint="Password"
         android:inputType="textPassword"
+        android:text="raspberry"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textbox_user"

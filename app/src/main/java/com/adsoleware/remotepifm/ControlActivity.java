@@ -1,11 +1,23 @@
 package com.adsoleware.remotepifm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.loader.content.CursorLoader;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.service.controls.Control;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +37,16 @@ import com.jcraft.jsch.SftpException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +56,7 @@ public class ControlActivity extends AppCompatActivity {
 
     String wavFiles;
     String mp3files;
+    String mp3files_check;
     String selectedFile;
 
     TextView status = null;
@@ -44,23 +66,16 @@ public class ControlActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         status = (TextView)findViewById(R.id.textbox_status);
 
-        if(checkMp3() == true){
-            status.setText("Found .mp3 File! Click 'Convert'");
-        }
-        else{
-            status.setText("No Files were Found. Try Uploading new .mp3/.wav files");
-        }
 
         getFiles();
     }
 
 
     public void getFiles(){
-        try {
-
-
             new Thread(new Runnable() {
                 public void run() {
 
@@ -68,10 +83,8 @@ public class ControlActivity extends AppCompatActivity {
                         wavFiles = cmd("find /home/pi/Music/*.wav");
 
                         ListView lv = (ListView) findViewById(R.id.listbox_files);
-                        ArrayList<String> ListElements = new ArrayList<>();
 
                         ArrayList list = new ArrayList<>();
-                        String[] ary = wavFiles.split("\r\n");
 
                         ControlActivity.this.runOnUiThread(new Runnable()
                         {
@@ -82,6 +95,7 @@ public class ControlActivity extends AppCompatActivity {
                                     BufferedReader bufReader = new BufferedReader(new StringReader(wavFiles));
                                     String line=null;
                                     while( (line=bufReader.readLine()) != null )
+                                    while( (line=bufReader.readLine()) != null )
                                     {
                                         String replaced = line.replace("/home/pi/Music/", "").replace("_", " ").replace(".wav", "");
                                         String statustext_replaced = replaced;
@@ -89,8 +103,9 @@ public class ControlActivity extends AppCompatActivity {
                                         if(statustext_replaced.length() > 50){
                                             statustext_replaced = statustext_replaced.substring(0, 50);
                                         }
-                                        status.setText("Added '" + statustext_replaced + "'");
+
                                         list.add(replaced);
+                                        status.setText("Added '" + statustext_replaced + "'");
                                     }
                                 } catch (Exception ex){
 
@@ -122,17 +137,11 @@ public class ControlActivity extends AppCompatActivity {
 
 
                     } catch (Exception e) {
-                        Log.e("Some Tag", e.getMessage());
+                        Log.e("Some Nice Error", e.getMessage());
                     }
 
                 }
             }).start();
-
-        } catch (Exception e) {
-            Log.e("SomeTag", e.getMessage());
-        }
-
-        status.setText("Finished converting files :)");
     }
 
     public String cmd(
@@ -176,7 +185,7 @@ public class ControlActivity extends AppCompatActivity {
 
             return baos.toString();
         } catch (Exception e){
-            Log.e("Some Tag", e.getMessage());
+            Log.e("CMD ERROR", e.getMessage());
 
             return "ERROR";
         }
@@ -194,149 +203,114 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     public void playsound(View view) {
-        EditText freq = (EditText)findViewById(R.id.textbox_freq);
 
-        String text = "Playing '" + selectedFile + "'";
+        if(selectedFile != null && selectedFile.length() > 0){
+            EditText freq = (EditText)findViewById(R.id.textbox_freq);
+            String text = "Playing '" + selectedFile + "'";
 
-        int i = text.length();
+            Log.e("Play", "Playing '" + selectedFile + "'");
 
-        if(i > 50){
-            i = 50;
-        }
+            int i = text.length();
 
-        text = text.substring(0, i);
-        status.setText(text);
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-
-
-                    Log.e("Playback", cmd("sudo ./PiFmRds/src/pi_fm_rds -freq " + freq.getText().toString() + " -audio Music/" + selectedFile + " -ps 'Pi FM' -rt 'Broadcast powered by Remote Pi FM app' &"));
-
-                } catch (Exception e) {
-                    Log.e("playSound: ", e.getMessage());
-                }
+            if(i > 50){
+                i = 50;
             }
-        }).start();
+
+            text = text.substring(0, i);
+            status.setText(text);
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+
+                        Log.e("playsound", "Started Broadcast");
+                        cmd("sudo ./PiFmRds/src/pi_fm_rds -freq " + freq.getText().toString() + " -audio Music/" + selectedFile + " -ps 'Pi FM' -rt 'Broadcast powered by Remote Pi FM app' &");
+
+                    } catch (Exception e) {
+                        Log.e("playSound: ", e.getMessage());
+                    }
+                }
+            }).start();
+        }
+        else{
+
+        }
     }
 
-    int checkMp3_i = 0;
-    public boolean checkMp3() {
 
-        ListView lv = (ListView) findViewById(R.id.listbox_files);
-        ArrayList list = new ArrayList<>();
-
-
+    public void convertFile(View view){
         try {
-            mp3files = cmd("find /home/pi/Music/*.mp3");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String[] checkMp3_ary = mp3files.split("\r\n");
-
-        for(String s : checkMp3_ary){
-            checkMp3_i += 1;
-            Log.e("Found CheckMp3", String.valueOf(checkMp3_i));
-        }
-
-        if(checkMp3_i > 0){
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public void convertFile(View view) {
-
-        ListView lv = (ListView) findViewById(R.id.listbox_files);
-        ArrayList list = new ArrayList<>();
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    mp3files = cmd("find /home/pi/Music/*.mp3");
-
-                    String[] ary = mp3files.split("\r\n");
-
-                    try{
-                        BufferedReader bufReader = new BufferedReader(new StringReader(mp3files));
-                        String line=null;
-                        while( (line=bufReader.readLine()) != null )
-                        {
-                            String formatted = line.replace(".mp3", "").replace(" ", "_").replace("[", "_").replace("]", "_")
-                                                    .replace("(", "_").replace(")", "_").replace("&", "").replace("#", "")
-                                                    .replace("!", "");
 
 
-                            status.post(new Runnable() {
-                                public void run() {
-                                    String text = "Converting '" + formatted.replace("/home/pi/Music/", "") + "'";
+            new Thread(new Runnable() {
+                public void run() {
 
-                                    if(text.length() > 50){
-                                        text = text.substring(0, 50);
+                    try {
+                        mp3files = cmd("find /home/pi/Music/*.mp3");
+                        ListView lv = (ListView) findViewById(R.id.listbox_files);
+                        ArrayList list = new ArrayList<>();
+
+                        try{
+                            BufferedReader bufReader = new BufferedReader(new StringReader(mp3files));
+                            String line=null;
+                            while( (line=bufReader.readLine()) != null ) {
+                                String replaced = line.replace(".mp3", ".wav").replace(" ", "_").replace("[", "_").replace("]", "_")
+                                        .replace("(", "_").replace(")", "_").replace("&", "").replace("#", "");
+
+
+                                Log.e("INFO", cmd("ffmpeg -y -i '" + line + "' '" + replaced + "'"));
+                                Log.e("FFMPEG", "ffmpeg -y -i '" + line + "' '" + replaced + "'");
+
+
+                                ControlActivity.this.runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        getFiles();
+
+                                        String statustext_replaced = replaced.replace("/home/pi/Music/", "").replace(".wav", "");
+                                        if (statustext_replaced.length() > 50) {
+                                            statustext_replaced = statustext_replaced.substring(0, 50);
+                                        }
+
+                                        status.setText("Converting '" + statustext_replaced + "'");
+
                                     }
+                                });
 
-                                    status.setText(text);
-                                }
-                            });
-
-
-                            cmd("ffmpeg -i '" + line + "' '" + formatted + ".wav'");
-
-                            getFiles();
-
-                            Log.e("CONVERT", "Trying to convert " + line + " to " + formatted);
-                            Log.e("INFO", "ffmpeg -i '" + line + "' '" + formatted + ".wav'");
+                            }
+                        } catch (Exception ex){
+                            Log.e("Converting Error", ex.getMessage());
                         }
 
 
-                    } catch (Exception ex){
-
+                    } catch (Exception e) {
+                        Log.e("Some Nice Error", e.getMessage());
                     }
 
-                } catch (Exception e) {
-                    Log.e("Some Tag", e.getMessage());
+                    ControlActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            status.setText("Finished loading Files :)");
+                        }
+                    });
+
                 }
-            }
-        }).start();
+            }).start();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ControlActivity.this, android.R.layout.simple_list_item_1, list);
-
-        lv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-                String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
-                try {
-
-                    selectedFile = selectedFromList;
-
-
-
-
-                    Toast.makeText(ControlActivity.this, "Selected File " + selectedFromList, Toast.LENGTH_SHORT).show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        } catch (Exception e) {
+            Log.e("SomeTag", e.getMessage());
+        }
         getFiles();
     }
 
     public void stopSound(View view) {
+        status.setText("Stopped Broadcast");
+
         new Thread(new Runnable() {
             public void run() {
 
                 try {
                     cmd("sudo pkill pi_fm_rds");
-
-                    status.setText("Stopped Broadcast");
+                    Log.e("stopSound", "Stopped Broadcast");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -353,27 +327,21 @@ public class ControlActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
 
-
                 try {
+                    jsch.setKnownHosts("~/.ssh/known_hosts");
+                    java.util.Properties config = new java.util.Properties();
+                    config.put("StrictHostKeyChecking", "no");
+                    jschSession.setConfig(config);
 
-
-                    try {
-                        jsch.setKnownHosts("/Users/john/.ssh/known_hosts");
-                    } catch (JSchException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    jschSession.setPassword(MainActivity._pass);
-                    jschSession.connect();
-
-
-                } catch (Exception e) {
+                } catch (JSchException e) {
                     e.printStackTrace();
                 }
 
             }
         }).start();
+
+        jschSession.setPassword(MainActivity._pass);
+        jschSession.connect();
 
         return (ChannelSftp) jschSession.openChannel("sftp");
     }
@@ -382,32 +350,37 @@ public class ControlActivity extends AppCompatActivity {
     public void onActivityResult(int requestcode, int resultCode, Intent data){
         super.onActivityResult(requestcode, resultCode, data);
 
-        if(requestcode == requestcode && resultCode == Activity.RESULT_OK){
+        if(resultCode == Activity.RESULT_OK){
             if(data == null){
                 return;
             }
-            Uri uri = data.getData();
-            Toast.makeText(ControlActivity.this, uri.getPath(), Toast.LENGTH_SHORT).show();
 
-            uploadFile(uri.getPath());
+            if ((data != null) && (data.getData() != null)){
+
+                Uri myUri = data.getData();
+                String path = myUri.getPath();
+
+                uploadFile(getRealPath(this, myUri));
+
+                //Uri uri = data.getData();
+                //uploadFile(getRealPathFromURI_API11to18(this, uri));
+            }
+
         }
     }
 
+
+    public static final int REQ_PICK_AUDIO = 10001;
     public void openfilechooser(View view){
 
-        Toast.makeText(ControlActivity.this, "Feature not implemented yet", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ControlActivity.this, "Feature not implemented yet", Toast.LENGTH_SHORT).show();
 
-        // Throws error, not fixed, therefore "not implemented"
-        // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        // intent.setType("*/*");
-        // String[] mimetypes = {"audio/mp3", "audio/wav"};
-        // intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        // startActivityForResult(intent, requestcode);
+        //Throws error, not fixed, therefore "not implemented"
+        Intent audio_picker_intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(audio_picker_intent, REQ_PICK_AUDIO);
     }
 
-    public void uploadFile(String path) {
-
-
+    public void uploadFile(String file) {
         new Thread(new Runnable() {
             public void run() {
 
@@ -421,18 +394,228 @@ public class ControlActivity extends AppCompatActivity {
                     Log.e("SFTP: ",e.getMessage());
                 }
 
+                String path = file;
+                String filename = path.substring(path.lastIndexOf("/")+1);
 
-                String localFile = path;
-                String remoteDir = "/home/pi/Music";
+                String remoteDir = "/home/pi/Music/";
 
                 try {
-                    channelSftp.put(localFile, remoteDir + "jschFile.txt");
+                    channelSftp.put(file, remoteDir + filename);
+
+                    ControlActivity.this.runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            Toast.makeText(ControlActivity.this, "File successfully uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } catch (SftpException e) {
-                    e.printStackTrace();
+                    ControlActivity.this.runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            Toast.makeText(ControlActivity.this, "Unable to Upload File", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("uploadFile-put", e.getMessage());
                 }
 
                 channelSftp.exit();
             }
         }).start();
+    }
+
+    public static String getRealPath(Context context, Uri fileUri) {
+        String realPath;
+        // SDK < API11
+        if (Build.VERSION.SDK_INT < 11) {
+            realPath = getRealPathFromURI_BelowAPI11(context, fileUri);
+        }
+        // SDK >= 11 && SDK < 19
+        else if (Build.VERSION.SDK_INT < 19) {
+            realPath = getRealPathFromURI_API11to18(context, fileUri);
+        }
+        // SDK > 19 (Android 4.4) and up
+        else {
+            realPath = getRealPathFromURI_API19(context, fileUri);
+        }
+        return realPath;
+    }
+
+
+    @SuppressLint("NewApi")
+    public static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        String result = null;
+
+        CursorLoader cursorLoader = new CursorLoader(context, contentUri, proj, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            result = cursor.getString(column_index);
+            cursor.close();
+        }
+        return result;
+    }
+
+    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index = 0;
+        String result = "";
+        if (cursor != null) {
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            result = cursor.getString(column_index);
+            cursor.close();
+            return result;
+        }
+        return result;
+    }
+
+    /**
+     * Get a file path from a Uri. This will get the the path for Storage Access
+     * Framework Documents, as well as the _data field for the MediaStore and
+     * other file-based ContentProviders.
+     *
+     * @param context The context.
+     * @param uri     The Uri to query.
+     * @author paulburke
+     */
+    @SuppressLint("NewApi")
+    public static String getRealPathFromURI_API19(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 }
