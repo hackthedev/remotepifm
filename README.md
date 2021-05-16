@@ -48,6 +48,8 @@ make
 
 To verify if it's working, you can run `sudo ./pi_fm_rds -freq 105.3 -audio sound.wav`. If you've set a nearby radio to the FM Frequency `105.3` and hear the `sound.wav` file, it is working. Now you could [download](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk) the Android App and try connecting to your Raspberry Pi. Please Note that your Smartphone and Raspberry Pi need a internet connection.
 
+A guide on how to enable Wifi and SSH without screen can be found [here](https://github.com/hackthedev/remotepifm/wiki/Headless-Setup:-Enable-Wifi-and-SSH-without-Screen-and-Console-etc)
+
 <br>
 
 ## Hardware Setup
