@@ -10,7 +10,7 @@ controlling it easier.
 <br>
 
 ### Contents
-- [Requirements](https://github.com/hackthedev/remotepifm#software-installation)
+- [Requirements](https://github.com/hackthedev/remotepifm#requirements)
 - [Software Installation](https://github.com/hackthedev/remotepifm#software-installation)
 - [Hardware Setup](https://github.com/hackthedev/remotepifm#hardware-setup)
 - [Features](https://github.com/hackthedev/remotepifm#features)
