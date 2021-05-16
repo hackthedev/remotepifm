@@ -17,6 +17,33 @@ controlling it easier.
 
 <br>
 
+## Software Installation
+To install [PiFmRds](https://github.com/ChristopheJacquet/PiFmRds), enter the following lines.
+```
+apt-get update -y
+apt-get upgrade -y
+apt-get install sudo
+
+sudo apt-get install libsndfile1-dev
+git clone https://github.com/ChristopheJacquet/PiFmRds.git
+cd PiFmRds/src
+make clean
+make
+```
+
+<br>
+
+To verify if it's working, you can run `sudo ./pi_fm_rds -freq 105.3 -audio sound.wav`. If you've set a nearby radio to the FM Frequency `105.3` and hear the `sound.wav` file, it is working. Now you could [download](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk) the Android App and try connecting to your Raspberry Pi. Please Note that your Smartphone and Raspberry Pi need a internet connection.
+
+<br>
+
+## Hardware Setup
+Hardware Setup is really simple. On the Raspberry Pi 3B+, hook a 1 meter long cable to the GPIO4 like shown below.
+
+<img src="https://shy-devils.life-is-pa.in/RYXUx9.jpeg" />
+
+<br>
+
 ## Features
 - Wireless SSH connection to your Raspberry Pi
 - Play and Stop FM Broadcast
