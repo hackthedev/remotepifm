@@ -67,18 +67,22 @@ Hardware Setup is really simple. On the Raspberry Pi 3B+, hook a 1 meter long ca
 - Convert uploaded .mp3 files to .wav
   - Also converts file names (spaces are being removed, brackets will be also removed etc...)
 
+
 <br>
 
-## App Store
-I've submitted this Application to Google Play and Amazon's App Store. Therefore don't just copy it and publish it on your own. Since I already submitted it and I don't like 
-the idea of someone copying and republishing my app. See the license file anyway. 
-  
-<br>
 
 ## Planned Features
 - Save connections
 - Upload files via App (implemented but disabled, else it would crash app)
 - Auto-Installer (e.g. automatically install PiFmRds, sndfile lib, etc..)
+
+
+<br>
+
+## App Store
+I've submitted this Application to Google Play and Amazon's App Store. Therefore don't just copy it and publish it on your own. Since I already submitted it and I don't like 
+the idea of someone copying and republishing my app. See the license file anyway. 
+ 
 
 <br>
 
