@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         try{
             hostname = hostname.replace(" ", "");
 
-
             JSch jsch = new JSch();
             Session session = jsch.getSession(username, hostname, 22);
             session.setPassword(password);
