@@ -1,4 +1,4 @@
-# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" /> <img src="https://img.shields.io/badge/Amazon App Store-Awaiting Approval-orange" />
+# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" /> <img src="https://img.shields.io/badge/Amazon App Store-Live-success" />
 
 This is an Android App which allows you to control you Raspberry Pi (3B+ prefered) in combination with the [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds). 
 I made this app beccause I wanted to be able to control everything from my Smartphone. I once made a C# Application which is exactly like this app but was a WinForm App 
@@ -14,7 +14,6 @@ controlling it easier.
 - [Software Installation](#software-installation)
 - [Hardware Setup](#hardware-setup)
 - [Features](#features)
-- [Planned Features](#planned-features)
 - [App Store](#app-store)
 - [About Updates](#about-updates)
 - [Download](#download)
@@ -65,17 +64,10 @@ Hardware Setup is really simple. On the Raspberry Pi 3B+, hook a 1 meter long ca
 - Select <b>uploaded</b> files to play
 - Set your custom frequency
 - Convert uploaded .mp3 files to .wav
-  - Also converts file names (spaces are being removed, brackets will be also removed etc...)
+  - <i>Also converts file names (spaces are being removed, brackets will be also removed etc...)</i>
 
-
-<br>
-
-
-## Planned Features
-- Save connections
-- Upload files via App (implemented but disabled, else it would crash app)
-- Auto-Installer (e.g. automatically install PiFmRds, sndfile lib, etc..)
-
+- Upload files via App
+  - <i>.mp3 and .wav only due to support reasons</i>
 
 <br>
 
@@ -97,6 +89,7 @@ If you want to download <b>the app</b> (=apk file), [click here](https://github.
 <br>
 
 ## Screenshots
-<img width="407" height="863" src="https://shy-devils.life-is-pa.in/124VaF.png" />
-<img width="407" height="863" src="https://shy-devils.life-is-pa.in/o2Eogf.png" />
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/KTa8Nj.png" />
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/RiZAMs.png" />
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/mCRZLz.png" />
 (yeah i really love nightcore)
