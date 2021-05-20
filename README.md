@@ -84,7 +84,7 @@ I've planed to keep updating this app and add new features. When everything work
 <br>
 
 ## Download
-If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
+If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.3.3/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
 
 <br>
 
