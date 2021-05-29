@@ -1,4 +1,4 @@
-# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Live%20v1.3.3-orange" /> <img src="https://img.shields.io/badge/Amazon%20App%20Store-Live%20v1.3.3-success" />
+# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Live%20v1.3.3-success" /> <img src="https://img.shields.io/badge/Amazon%20App%20Store-Live%20v1.3.3-success" />
 
 This is an Android App which allows you to control you Raspberry Pi (3B+ prefered) in combination with the [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds). 
 I made this app beccause I wanted to be able to control everything from my Smartphone. I once made a C# Application which is exactly like this app but was a WinForm App 
