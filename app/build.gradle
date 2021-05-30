@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.adsoleware.remotepifm"
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName '2.4.3'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

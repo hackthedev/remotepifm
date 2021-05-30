@@ -70,7 +70,6 @@ public class ControlActivity extends AppCompatActivity {
 
         status = (TextView)findViewById(R.id.textbox_status);
 
-
         getFiles();
     }
 
@@ -82,6 +81,7 @@ public class ControlActivity extends AppCompatActivity {
                     try {
                         wavFiles = cmd("find /home/pi/Music/*.wav");
 
+
                         ListView lv = (ListView) findViewById(R.id.listbox_files);
 
                         ArrayList list = new ArrayList<>();
@@ -90,7 +90,6 @@ public class ControlActivity extends AppCompatActivity {
                         {
                             public void run()
                             {
-
                                 try{
                                     BufferedReader bufReader = new BufferedReader(new StringReader(wavFiles));
                                     String line=null;
@@ -105,10 +104,9 @@ public class ControlActivity extends AppCompatActivity {
                                         }
 
                                         list.add(replaced);
-                                        status.setText("Added '" + statustext_replaced + "'");
                                     }
                                 } catch (Exception ex){
-
+                                    Log.e("getFiles", ex.getMessage());
                                 }
 
                                 ArrayAdapter<String> adapter = new ArrayAdapter<>(ControlActivity.this, android.R.layout.simple_list_item_1, list);
@@ -126,7 +124,7 @@ public class ControlActivity extends AppCompatActivity {
                                             Toast.makeText(ControlActivity.this, "Selected File " + selectedFromList, Toast.LENGTH_SHORT).show();
 
                                         } catch (Exception e) {
-                                            e.printStackTrace();
+                                            Log.e("Ex", e.getMessage());
                                         }
                                     }
                                 });
@@ -148,14 +146,13 @@ public class ControlActivity extends AppCompatActivity {
             String command) throws Exception {
 
         try{
-
             String username = MainActivity._user;
+            String password = MainActivity._pass;;
             String hostname = MainActivity._host;
-            String password = MainActivity._pass;
-            String _port = MainActivity._port;
+            String port = MainActivity._port;
 
             JSch jsch = new JSch();
-            Session session = jsch.getSession(username, hostname, Integer.parseInt(_port));
+            Session session = jsch.getSession(username, hostname, Integer.parseInt(port));
             session.setPassword(password);
 
             // Avoid asking for key confirmation
@@ -170,7 +167,6 @@ public class ControlActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             channelssh.setOutputStream(baos);
 
-            // Execute command
             channelssh.setCommand(command);
 
             channelssh.connect();
@@ -185,7 +181,7 @@ public class ControlActivity extends AppCompatActivity {
 
             return baos.toString();
         } catch (Exception e){
-            Log.e("CMD ERROR", e.getMessage());
+            Log.e("MainActivity-Login:", e.getMessage());
 
             return "ERROR";
         }
@@ -254,12 +250,14 @@ public class ControlActivity extends AppCompatActivity {
                             BufferedReader bufReader = new BufferedReader(new StringReader(mp3files));
                             String line=null;
                             while( (line=bufReader.readLine()) != null ) {
+
                                 String replaced = line.replace(".mp3", ".wav").replace(" ", "_").replace("[", "_").replace("]", "_")
                                         .replace("(", "_").replace(")", "_").replace("&", "").replace("#", "");
 
-
                                 Log.e("INFO", cmd("ffmpeg -y -i '" + line + "' '" + replaced + "'"));
                                 Log.e("FFMPEG", "ffmpeg -y -i '" + line + "' '" + replaced + "'");
+
+
 
 
                                 ControlActivity.this.runOnUiThread(new Runnable() {
@@ -361,9 +359,6 @@ public class ControlActivity extends AppCompatActivity {
                 String path = myUri.getPath();
 
                 uploadFile(getRealPath(this, myUri));
-
-                //Uri uri = data.getData();
-                //uploadFile(getRealPathFromURI_API11to18(this, uri));
             }
 
         }
@@ -372,10 +367,6 @@ public class ControlActivity extends AppCompatActivity {
 
     public static final int REQ_PICK_AUDIO = 10001;
     public void openfilechooser(View view){
-
-        //Toast.makeText(ControlActivity.this, "Feature not implemented yet", Toast.LENGTH_SHORT).show();
-
-        //Throws error, not fixed, therefore "not implemented"
         Intent audio_picker_intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(audio_picker_intent, REQ_PICK_AUDIO);
     }
@@ -476,15 +467,6 @@ public class ControlActivity extends AppCompatActivity {
         return result;
     }
 
-    /**
-     * Get a file path from a Uri. This will get the the path for Storage Access
-     * Framework Documents, as well as the _data field for the MediaStore and
-     * other file-based ContentProviders.
-     *
-     * @param context The context.
-     * @param uri     The Uri to query.
-     * @author paulburke
-     */
     @SuppressLint("NewApi")
     public static String getRealPathFromURI_API19(final Context context, final Uri uri) {
 
@@ -553,16 +535,6 @@ public class ControlActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Get the value of the data column for this Uri. This is useful for
-     * MediaStore Uris, and other file-based ContentProviders.
-     *
-     * @param context       The context.
-     * @param uri           The Uri to query.
-     * @param selection     (Optional) Filter used in the query.
-     * @param selectionArgs (Optional) Selection arguments used in the query.
-     * @return The value of the _data column, which is typically a file path.
-     */
     public static String getDataColumn(Context context, Uri uri, String selection,
                                        String[] selectionArgs) {
 
@@ -586,36 +558,29 @@ public class ControlActivity extends AppCompatActivity {
         return null;
     }
 
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
     public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
     public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public void openUrl(String url){
+        Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    public void openGithub(View view) {
+        openUrl("https://github.com/hackthedev/remotepifm");
     }
 }
