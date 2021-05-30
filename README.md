@@ -1,4 +1,4 @@
-# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Awaiting Approval-orange" /> <img src="https://img.shields.io/badge/Amazon App Store-Live-success" />
+# Remote Pi FM <img src="https://img.shields.io/badge/Google Play Store-Live%20v1.3.3-success" /> <img src="https://img.shields.io/badge/Amazon%20App%20Store-Live%20v1.3.3-success" />
 
 This is an Android App which allows you to control you Raspberry Pi (3B+ prefered) in combination with the [PiFmRds Project](https://github.com/ChristopheJacquet/PiFmRds). 
 I made this app beccause I wanted to be able to control everything from my Smartphone. I once made a C# Application which is exactly like this app but was a WinForm App 
@@ -84,7 +84,7 @@ I've planed to keep updating this app and add new features. When everything work
 <br>
 
 ## Download
-If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.1.1/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
+If you want to download <b>the app</b> (=apk file), [click here](https://github.com/hackthedev/remotepifm/releases/download/1.3.3/app-release.apk). You have to have "Unknown Sources" to be enabled or wait until my submission on Google Play Store was approved and download it from there.
 
 <br>
 
