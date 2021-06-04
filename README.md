@@ -89,6 +89,7 @@ If you want to download <b>the app</b> (=apk file), [click here](https://github.
 <br>
 
 ## Screenshots
+<img width="407" height="863" src="https://shy-devils.life-is-pa.in/hVyq2R.png" />
 <img width="407" height="863" src="https://shy-devils.life-is-pa.in/KTa8Nj.png" />
 <img width="407" height="863" src="https://shy-devils.life-is-pa.in/RiZAMs.png" />
 <img width="407" height="863" src="https://shy-devils.life-is-pa.in/mCRZLz.png" />
