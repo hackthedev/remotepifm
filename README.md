@@ -61,8 +61,12 @@ Hardware Setup is really simple. On the Raspberry Pi 3B+, hook a 1 meter long ca
 ## Features
 - Wireless SSH connection to your Raspberry Pi
 - Play and Stop FM Broadcast
+- Status Label for Information about whats going on
 - Select <b>uploaded</b> files to play
-- Set your custom frequency
+- Set your own custom frequency
+- Automatically Saves established connections
+- Add New Connections
+- Quick-Connect for connections once established
 - Convert uploaded .mp3 files to .wav
   - <i>Also converts file names (spaces are being removed, brackets will be also removed etc...)</i>
 
