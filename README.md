@@ -67,8 +67,13 @@ Hardware Setup is really simple. On the Raspberry Pi 3B+, hook a 1 meter long ca
 - Automatically Saves established connections
 - Add New Connections
 - Quick-Connect for connections once established
+
+<br>
+
 - Convert uploaded .mp3 files to .wav
   - <i>Also converts file names (spaces are being removed, brackets will be also removed etc...)</i>
+
+<br>
 
 - Upload files via App
   - <i>.mp3 and .wav only due to support reasons</i>
