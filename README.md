@@ -9,7 +9,7 @@ controlling it easier.
 
 <br>
 
-### Contents
+### Table of Contents
 - [Requirements](#requirements)
 - [Software Installation](#software-installation)
 - [Hardware Setup](#hardware-setup)
