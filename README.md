@@ -9,6 +9,10 @@ controlling it easier.
 
 <br>
 
+**Development paused! [Read here for more info](https://github.com/hackthedev/remotepifm/issues/7)**
+
+<br>
+
 ### Table of Contents
 - [Requirements](#requirements)
 - [Software Installation](#software-installation)
